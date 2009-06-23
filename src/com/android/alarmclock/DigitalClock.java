@@ -50,6 +50,7 @@ public class DigitalClock extends LinearLayout {
     private ContentObserver mFormatChangeObserver;
     private boolean mLive = true;
     private boolean mAttached;
+    private Context mContext;
 
     /* called by system on minute ticks */
     private final Handler mHandler = new Handler();
@@ -103,10 +104,12 @@ public class DigitalClock extends LinearLayout {
 
     public DigitalClock(Context context) {
         this(context, null);
+        mContext = context;
     }
 
     public DigitalClock(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     @Override

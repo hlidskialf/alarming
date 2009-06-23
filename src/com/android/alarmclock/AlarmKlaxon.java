@@ -76,7 +76,6 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
     };
 
     AlarmKlaxon() {
-        mVibrator = new Vibrator();
     }
 
     public void reportAlarm(
@@ -98,6 +97,9 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
     private static final float IN_CALL_VOLUME = 0.125f;
 
     private void play(Context context, int alarmId) {
+        if (mVibrator == null) {
+          mVibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+        }
         ContentResolver contentResolver = context.getContentResolver();
 
         if (mPlaying) stop(context, false);
@@ -144,7 +146,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
                 // Must reset the media player to clear the error state.
                 mMediaPlayer.reset();
                 setDataSourceFromResource(context.getResources(), mMediaPlayer,
-                        com.android.internal.R.raw.fallbackring);
+                        R.raw.fallbackring);
                 startAlarm(mMediaPlayer);
             } catch (Exception ex2) {
                 // At this point we just don't play anything.
@@ -197,6 +199,10 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
                 mMediaPlayer = null;
+            }
+
+            if (mVibrator == null) {
+              mVibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
             }
 
             // Stop vibrator

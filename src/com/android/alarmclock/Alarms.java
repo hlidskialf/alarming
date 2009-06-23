@@ -39,6 +39,7 @@ import java.util.Calendar;
  */
 public class Alarms {
 
+    public static final String ACTION_ALARM_CHANGED = "android.intent.action.ALARM_CHANGED";
     public final static String ALARM_ALERT_ACTION = "com.android.alarmclock.ALARM_ALERT";
     public final static String ID = "alarm_id";
     public final static String TIME = "alarm_time";
@@ -696,7 +697,7 @@ public class Alarms {
      * Tells the StatusBar whether the alarm is enabled or disabled
      */
     private static void setStatusBarIcon(Context context, boolean enabled) {
-        Intent alarmChanged = new Intent(Intent.ACTION_ALARM_CHANGED);
+        Intent alarmChanged = new Intent(ACTION_ALARM_CHANGED);
         alarmChanged.putExtra("alarmSet", enabled);
         context.sendBroadcast(alarmChanged);
     }
