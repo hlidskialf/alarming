@@ -22,7 +22,7 @@
     <!-- A layout that displays the time.  Shows time, am/pm (if 12-hour),
          and an optional line below, used for day/days of week -->
 
-    <com.android.alarmclock.DigitalClock android:id="@+id/digitalClock"
+    <com.hlidskialf.android.alarmclock.DigitalClock android:id="@+id/digitalClock"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:focusable="true"
@@ -86,7 +86,7 @@
             android:layout_marginLeft="2dp"
             android:visibility="gone"/>
 
-    </com.android.alarmclock.DigitalClock>
+    </com.hlidskialf.android.alarmclock.DigitalClock>
 
     <CheckBox android:id="@+id/alarmButton"
         android:layout_width="60dp"

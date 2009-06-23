@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.alarmclock.DigitalClock android:id="@+id/digitalClock"
+<com.hlidskialf.android.alarmclock.DigitalClock android:id="@+id/digitalClock"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="208dip"
@@ -49,4 +49,4 @@
             android:text="@string/pm"
             android:textSize="28sp"/>
     </LinearLayout>
-</com.android.alarmclock.DigitalClock>
+</com.hlidskialf.android.alarmclock.DigitalClock>

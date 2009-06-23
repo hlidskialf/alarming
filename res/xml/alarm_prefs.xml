@@ -20,7 +20,7 @@
         android:title="@string/enable"/>
     <Preference android:key="time" 
         android:title="@string/time"/>
-    <com.android.alarmclock.AlarmPreference
+    <com.hlidskialf.android.alarmclock.AlarmPreference
         android:key="alarm" 
         android:title="@string/alert"
         android:ringtoneType="alarm"
@@ -28,7 +28,7 @@
         android:showSilent="false" />
     <CheckBoxPreference android:key="vibrate" 
         android:title="@string/alarm_vibrate"/>
-    <com.android.alarmclock.RepeatPreference
+    <com.hlidskialf.android.alarmclock.RepeatPreference
         android:key="setRepeat" 
         android:title="@string/alarm_repeat"
         android:entries="@array/days_of_week"

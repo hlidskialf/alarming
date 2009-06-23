@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.alarmclock;
+package com.hlidskialf.android.alarmclock;
 
 import android.content.ContentResolver;
 import android.content.Context;
