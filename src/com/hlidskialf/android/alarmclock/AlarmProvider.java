@@ -44,7 +44,7 @@ public class AlarmProvider extends ContentProvider {
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String DATABASE_NAME = "alarms.db";
-        private static final int DATABASE_VERSION = 5;
+        private static final int DATABASE_VERSION = 7;
 
         public DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -61,8 +61,16 @@ public class AlarmProvider extends ContentProvider {
                        "enabled INTEGER, " +
                        "vibrate INTEGER, " +
                        "message TEXT, " +
-                       "alert TEXT);");
+                       "alert TEXT, "+
+                       "snooze INTEGER, " +
+                       "duration INTEGER, " +
+                       "delay INTEGER, " +
+                       "vibrate_only INTEGER, " +
+                       "volume INTEGER, " +
+                       "crescendo INTEGER, " +
+                       );");
 
+            /*
             // insert default alarms
             String insertMe = "INSERT INTO alarms " +
                     "(hour, minutes, daysofweek, alarmtime, enabled, vibrate, message, alert) " +
@@ -70,16 +78,22 @@ public class AlarmProvider extends ContentProvider {
             db.execSQL(insertMe + "(7, 0, 127, 0, 0, 1, '', '');");
             db.execSQL(insertMe + "(8, 30, 31, 0, 0, 1, '', '');");
             db.execSQL(insertMe + "(9, 00, 0, 0, 0, 1, '', '');");
+            */
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int currentVersion) {
+          if (oldVersion == 6) { //upgrading from alarmingv1
+            db.exec
+          }
+          else {
             if (Log.LOGV) Log.v(
                     "Upgrading alarms database from version " +
                     oldVersion + " to " + currentVersion +
                     ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS alarms");
             onCreate(db);
+          }
         }
     }
 
