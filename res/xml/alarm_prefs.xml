@@ -16,24 +16,89 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         android:title="@string/set_alarm">
-    <CheckBoxPreference android:key="on" 
-        android:title="@string/enable"/>
-    <Preference android:key="time" 
-        android:title="@string/time"/>
-    <com.hlidskialf.android.alarmclock.AlarmPreference
-        android:key="alarm" 
-        android:title="@string/alert"
-        android:ringtoneType="alarm"
-        android:showDefault="false"
-        android:showSilent="false" />
-    <CheckBoxPreference android:key="vibrate" 
-        android:title="@string/alarm_vibrate"/>
-    <com.hlidskialf.android.alarmclock.RepeatPreference
-        android:key="setRepeat" 
-        android:title="@string/alarm_repeat"
-        android:entries="@array/days_of_week"
-        android:entryValues="@array/days_of_week"/>
-    <EditTextPreference android:key="label"
-        android:title="@string/label"
-        android:dialogTitle="@string/label" />
+    <PreferenceCategory android:title="@string/settings">
+        <CheckBoxPreference android:key="on" 
+            android:title="@string/enable"
+            android:persistent="false"
+            />
+        <EditTextPreference android:key="label"
+            android:title="@string/label"
+            android:dialogTitle="@string/label" 
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
+            android:persistent="false"
+            />
+        <Preference android:key="time" 
+            android:title="@string/time"
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.alarmclock.RepeatPreference android:key="setRepeat" 
+            android:title="@string/alarm_repeat"
+            android:entries="@array/days_of_week"
+            android:entryValues="@array/days_of_week"
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.preference.SeekBarPreference android:key="snooze"
+            android:title="@string/snooze"
+            android:text="@string/minutes"
+            android:max="60"
+            android:defaultValue="9"
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.preference.SeekBarPreference android:key="duration"
+            android:title="@string/duration"
+            android:text="@string/minutes"
+            android:max="60"
+            android:defaultValue="30"
+            android:persistent="false"
+            />
+        <ListPreference android:key="captcha_snooze" 
+            android:title="@string/captcha_snooze"
+            android:entries="@array/captcha_types"
+            android:entryValues="@array/captcha_values"
+            android:defaultValue="0"
+            android:persistent="false"
+            />
+        <ListPreference android:key="captcha_dismiss" 
+            android:title="@string/captcha_dismiss"
+            android:entries="@array/captcha_types"
+            android:entryValues="@array/captcha_values"
+            android:defaultValue="0"
+            android:persistent="false"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/alert">
+        <CheckBoxPreference android:key="vibrate" 
+            android:title="@string/alarm_vibrate"
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.alarmclock.AlarmPreference android:key="alarm" 
+            android:title="@string/alert"
+            android:ringtoneType="alarm"
+            android:showDefault="false"
+            android:showSilent="false" 
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.preference.SeekBarPreference android:key="volume"
+            android:title="@string/volume"
+            android:text="@string/percent"
+            android:max="100"
+            android:defaultValue="100"
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.preference.SeekBarPreference android:key="crescendo"
+            android:title="@string/crescendo"
+            android:text="@string/seconds"
+            android:max="60"
+            android:defaultValue="0"
+            android:persistent="false"
+            />
+        <com.hlidskialf.android.preference.SeekBarPreference android:key="delay"
+            android:title="@string/delay"
+            android:text="@string/milliseconds"
+            android:max="10000"
+            android:defaultValue="0"
+            android:persistent="false"
+            />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -80,8 +80,11 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
 
     public void reportAlarm(
             int idx, boolean enabled, int hour, int minutes,
-            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String message,
-            String alert) {
+            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String message, String alert,
+            int snooze, int duration, int delay, boolean vibrate_only, 
+            int volume, int crescendo,
+            int captcha_snooze, int captcha_dismiss
+            ) {
         if (Log.LOGV) Log.v("AlarmKlaxon.reportAlarm: " + idx + " " + hour +
                             " " + minutes + " dow " + daysOfWeek);
         mAlert = alert;

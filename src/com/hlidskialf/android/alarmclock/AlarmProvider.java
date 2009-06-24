@@ -68,7 +68,9 @@ public class AlarmProvider extends ContentProvider {
                        "vibrate_only INTEGER, " +
                        "volume INTEGER, " +
                        "crescendo INTEGER, " +
-                       );");
+                       "captcha_snooze INTEGER, "+
+                       "captcha_dismiss INTEGER "+
+                       "); ");
 
             /*
             // insert default alarms
@@ -84,7 +86,10 @@ public class AlarmProvider extends ContentProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int currentVersion) {
           if (oldVersion == 6) { //upgrading from alarmingv1
-            db.exec
+            db.execSQL("ALTER TABLE alarms ADD captcha_snooze INTEGER ");
+            db.execSQL("ALTER TABLE alarms ADD captcha_dismiss INTEGER ");
+            db.execSQL("UPDATE alarms SET message=name");
+            db.execSQL("UPDATE alarms SET name=''");
           }
           else {
             if (Log.LOGV) Log.v(
@@ -210,6 +215,7 @@ public class AlarmProvider extends ContentProvider {
 
         if (!values.containsKey(Alarms.AlarmColumns.ALERT))
             values.put(Alarms.AlarmColumns.ALERT, "");
+
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert("alarms", Alarms.AlarmColumns.MESSAGE, values);

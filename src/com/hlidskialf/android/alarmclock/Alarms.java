@@ -38,16 +38,20 @@ import java.util.Calendar;
  * The Alarms provider supplies info about Alarm Clock settings
  */
 public class Alarms {
-
     public static final String ACTION_ALARM_CHANGED = "android.intent.action.ALARM_CHANGED";
     public final static String ALARM_ALERT_ACTION = "com.hlidskialf.android.alarmclock.ALARM_ALERT";
     public final static String ID = "alarm_id";
     public final static String TIME = "alarm_time";
     public final static String LABEL = "alarm_label";
 
+    public final static int CAPTCHA_TYPE_NONE=0;
+    public final static int CAPTCHA_TYPE_PUZZLE=1;
+    public final static int CAPTCHA_TYPE_MATH=2;
+
     final static String PREF_SNOOZE_ID = "snooze_id";
     final static String PREF_SNOOZE_TIME = "snooze_time";
     final static String PREF_SNOOZE_LABEL = "snooze_label";
+
 
     private final static String DM12 = "E h:mm aa";
     private final static String DM24 = "E k:mm";
@@ -205,7 +209,7 @@ public class Alarms {
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "_id ASC";
+        public static final String DEFAULT_SORT_ORDER = "hour,minutes ASC";
 
         /**
          * Hour in 24-hour localtime 0 - 23.
@@ -256,9 +260,21 @@ public class Alarms {
          */
         public static final String ALERT = "alert";
 
+        public static final String SNOOZE = "snooze";
+        public static final String DURATION = "duration";
+        public static final String DELAY = "delay";
+        public static final String VIBRATE_ONLY = "vibrate_only";
+        public static final String VOLUME = "volume";
+        public static final String CRESCENDO = "crescendo";
+        public static final String CAPTCHA_SNOOZE = "captcha_snooze";
+        public static final String CAPTCHA_DISMISS = "captcha_dismiss";
+
         static final String[] ALARM_QUERY_COLUMNS = {
             _ID, HOUR, MINUTES, DAYS_OF_WEEK, ALARM_TIME,
-            ENABLED, VIBRATE, MESSAGE, ALERT};
+            ENABLED, VIBRATE, MESSAGE, ALERT,
+            SNOOZE, DURATION, DELAY, VIBRATE_ONLY, VOLUME, CRESCENDO,
+            CAPTCHA_SNOOZE, CAPTCHA_DISMISS
+            };
 
         /**
          * These save calls to cursor.getColumnIndexOrThrow()
@@ -273,6 +289,14 @@ public class Alarms {
         public static final int ALARM_VIBRATE_INDEX = 6;
         public static final int ALARM_MESSAGE_INDEX = 7;
         public static final int ALARM_ALERT_INDEX = 8;
+        public static final int ALARM_SNOOZE_INDEX = 9;
+        public static final int ALARM_DURATION_INDEX = 10;
+        public static final int ALARM_DELAY_INDEX = 11;
+        public static final int ALARM_VIBRATE_ONLY_INDEX = 12;
+        public static final int ALARM_VOLUME_INDEX = 13;
+        public static final int ALARM_CRESCENDO_INDEX = 14;
+        public static final int ALARM_CAPTCHA_SNOOZE_INDEX = 15;
+        public static final int ALARM_CAPTCHA_DISMISS_INDEX = 16;
     }
 
     /**
@@ -281,9 +305,11 @@ public class Alarms {
      */
     static interface AlarmSettings {
         void reportAlarm(
-                int idx, boolean enabled, int hour, int minutes,
-                DaysOfWeek daysOfWeek, boolean vibrate, String message,
-                String alert);
+          int idx, boolean enabled, int hour, int minutes,
+          DaysOfWeek daysOfWeek, boolean vibrate, String message, String alert,
+          int snooze, int duration, int delay, boolean vibrate_only, int volume, int crescendo,
+          int captcha_snooze, int captcha_dismiss
+        );
     }
 
     /**
@@ -352,9 +378,19 @@ public class Alarms {
                 boolean vibrate = cur.getInt(AlarmColumns.ALARM_VIBRATE_INDEX) == 1 ? true : false;
                 String message = cur.getString(AlarmColumns.ALARM_MESSAGE_INDEX);
                 String alert = cur.getString(AlarmColumns.ALARM_ALERT_INDEX);
+                int snooze = cur.getInt(AlarmColumns.ALARM_SNOOZE_INDEX);
+                int duration = cur.getInt(AlarmColumns.ALARM_DURATION_INDEX);
+                int delay = cur.getInt(AlarmColumns.ALARM_DELAY_INDEX);
+                boolean vibrate_only = cur.getInt(AlarmColumns.ALARM_VIBRATE_ONLY_INDEX) == 1 ? true : false;
+                int volume = cur.getInt(AlarmColumns.ALARM_VOLUME_INDEX);
+                int crescendo = cur.getInt(AlarmColumns.ALARM_CRESCENDO_INDEX);
+                int captcha_snooze = cur.getInt(AlarmColumns.ALARM_CAPTCHA_SNOOZE_INDEX);
+                int captcha_dismiss = cur.getInt(AlarmColumns.ALARM_CAPTCHA_DISMISS_INDEX);
                 alarmSettings.reportAlarm(
                         id, enabled, hour, minutes, new DaysOfWeek(daysOfWeek),
-                        vibrate, message, alert);
+                        vibrate, message, alert,
+                        snooze, duration, delay, vibrate_only, volume, crescendo,
+                        captcha_snooze, captcha_dismiss);
             } while (cur.moveToNext());
         }
     }
@@ -445,8 +481,11 @@ public class Alarms {
 
             public void reportAlarm(
                     int idx, boolean enabled, int hour, int minutes,
-                    DaysOfWeek daysOfWeek, boolean vibrate, String message,
-                    String alert) {
+                    DaysOfWeek daysOfWeek, boolean vibrate, String message, String alert,
+                    int snooze, int duration, int delay, boolean vibrate_only, 
+                    int volume, int crescendo,
+                    int captcha_snooze, int captcha_dismiss
+                    ) {
                 mHour = hour;
                 mMinutes = minutes;
                 mDaysOfWeek = daysOfWeek;
@@ -502,8 +541,11 @@ public class Alarms {
 
         public void reportAlarm(
                 int idx, boolean enabled, int hour, int minutes,
-                DaysOfWeek daysOfWeek, boolean vibrate, String message,
-                String alert) {
+                DaysOfWeek daysOfWeek, boolean vibrate, String message, String alert,
+                int snooze, int duration, int delay, boolean vibrate_only, 
+                int volume, int crescendo,
+                int captcha_snooze, int captcha_dismiss
+                ) {
             if (enabled) {
                 long atTime = calculateAlarm(hour, minutes,
                                              daysOfWeek).getTimeInMillis();

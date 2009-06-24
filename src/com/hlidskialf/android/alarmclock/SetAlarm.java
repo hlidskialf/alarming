@@ -205,8 +205,11 @@ public class SetAlarm extends PreferenceActivity
      */
     public void reportAlarm(
             int idx, boolean enabled, int hour, int minutes,
-            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String label,
-            String alert) {
+            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String label, String alert,
+            int snooze, int duration, int delay, boolean vibrate_only, 
+            int volume, int crescendo,
+            int captcha_snooze, int captcha_dismiss
+            ) {
 
         if (label == null || label.length() == 0) {
             label = getString(R.string.default_label);
