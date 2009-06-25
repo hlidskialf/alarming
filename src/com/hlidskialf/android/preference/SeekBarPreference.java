@@ -24,21 +24,41 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
   private TextView mSplashText,mValueText;
   private Context mContext;
 
-  private String mDialogMessage, mSuffix;
+  private String mDialogMessage, mSuffix, mZeroText;
   private int mDefault, mMax, mValue = 0;
+  private String[] mEntries;
 
   public SeekBarPreference(Context context, AttributeSet attrs) { 
     super(context,attrs); 
     mContext = context;
 
-    mDialogMessage = attrs.getAttributeValue(androidns,"dialogMessage");
-    int string_id = attrs.getAttributeResourceValue(androidns,"text",0);
-    if (string_id != 0)
+    int string_id;
+
+    if ((string_id = attrs.getAttributeResourceValue(androidns,"dialogMessage",0)) != 0) 
+      mDialogMessage = context.getString(string_id);
+    else
+      mDialogMessage = attrs.getAttributeValue(androidns,"dialogMessage");
+
+    if ((string_id = attrs.getAttributeResourceValue(androidns,"text",0)) != 0)
       mSuffix = context.getString(string_id);
     else
       mSuffix = attrs.getAttributeValue(androidns,"text");
+
+    if ((string_id = attrs.getAttributeResourceValue(androidns,"hint",0)) != 0)
+      mZeroText = context.getString(string_id);
+    else
+      mZeroText = attrs.getAttributeValue(androidns,"hint");
+
     mDefault = attrs.getAttributeIntValue(androidns,"defaultValue", 0);
-    mMax = attrs.getAttributeIntValue(androidns,"max", 100);
+
+    int array_id = attrs.getAttributeResourceValue(androidns,"entries",0);
+    if (array_id != 0) {
+      mEntries = context.getResources().getStringArray(array_id);
+      mMax = mEntries.length-1;
+    }
+    else {
+      mMax = attrs.getAttributeIntValue(androidns,"max", 100);
+    }
 
   }
   @Override 
@@ -71,6 +91,7 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
     mSeekBar.setMax(mMax);
     mSeekBar.setProgress(mValue);
+    set_value(mValue);
     return layout;
   }
   @Override 
@@ -84,15 +105,21 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
   {
     super.onSetInitialValue(restore, defaultValue);
     if (restore) 
-      mValue = shouldPersist() ? getPersistedInt(mDefault) : 0;
+      mValue = shouldPersist() ? getPersistedInt(mDefault) : mDefault;
     else 
       mValue = (Integer)defaultValue;
+    set_value(mValue);
   }
 
   public void onProgressChanged(SeekBar seek, int value, boolean fromTouch)
   {
-    String t = String.valueOf(value);
-    mValueText.setText(mSuffix == null ? t : t.concat(mSuffix));
+    set_value(value);
+
+
+    if (mEntries != null) {
+      value = Integer.valueOf(mEntries[value]);
+    }
+
     if (shouldPersist())
       persistInt(value);
     callChangeListener(new Integer(value));
@@ -102,13 +129,29 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
 
   public void setMax(int max) { mMax = max; }
   public int getMax() { return mMax; }
-
   public void setProgress(int progress) { 
     mValue = progress;
     if (mSeekBar != null)
       mSeekBar.setProgress(progress); 
   }
   public int getProgress() { return mValue; }
+
+  private void set_value(int value)
+  {
+    if (value == 0 && mZeroText != null)  {
+      mValueText.setText(mZeroText);
+      return;
+    }
+
+    String t;
+    if (mEntries != null) {
+      t = mEntries[value]; 
+    }
+    else {
+      t = String.valueOf(value);
+    }
+    mValueText.setText(mSuffix == null ? t : t+" "+mSuffix);
+  }
 }
 
 
