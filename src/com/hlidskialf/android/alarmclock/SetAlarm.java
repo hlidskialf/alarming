@@ -52,6 +52,7 @@ public class SetAlarm extends PreferenceActivity
     private Preference mTimePref;
     private AlarmPreference mAlarmPref;
     private CheckBoxPreference mVibratePref;
+    private CheckBoxPreference mVibrateOnlyPref;
     private RepeatPreference mRepeatPref;
     private SeekBarPreference mSnoozePref;
     private SeekBarPreference mDurationPref;
@@ -67,13 +68,6 @@ public class SetAlarm extends PreferenceActivity
     private int mId;
     private int mHour;
     private int mMinutes;
-    private int mSnooze;
-    private int mDuration;
-    private int mCaptchaSnooze;
-    private int mCaptchaDismiss;
-    private int mVolume;
-    private int mCrescendo;
-    private int mDelay;
     private Alarms.DaysOfWeek mDaysOfWeek = new Alarms.DaysOfWeek();
 
     private boolean mReportAlarmCalled;
@@ -98,6 +92,24 @@ public class SetAlarm extends PreferenceActivity
         }
     }
 
+    private class SeekBarChangeListener implements Preference.OnPreferenceChangeListener {
+      public boolean onPreferenceChange(Preference p, Object newValue) {
+        updateSeekBarPref((SeekBarPreference)p);
+        saveAlarm(false);
+        return true;
+      }
+    }
+    private class CaptchaChangeListener implements Preference.OnPreferenceChangeListener {
+      public boolean onPreferenceChange(Preference p, Object newValue) {
+        ListPreference lp = (ListPreference)p;
+        lp.setValueIndex(lp.findIndexOfValue((String)newValue));
+        updateCaptchaPref(lp);
+        saveAlarm(false);
+        return false;
+      }
+    }
+
+
     private class AlarmsChangeObserver extends ContentObserver {
         public AlarmsChangeObserver() {
             super(new Handler());
@@ -107,6 +119,7 @@ public class SetAlarm extends PreferenceActivity
             Alarms.getAlarm(getContentResolver(), SetAlarm.this, mId);
         }
     }
+
 
     /**
      * Set an alarm.  Requires an Alarms.ID to be passed in as an
@@ -131,20 +144,15 @@ public class SetAlarm extends PreferenceActivity
         mTimePref = findPreference("time");
         mAlarmPref = (AlarmPreference) findPreference("alarm");
         mVibratePref = (CheckBoxPreference) findPreference("vibrate");
+        mVibrateOnlyPref = (CheckBoxPreference) findPreference("vibrate_only");
         mRepeatPref = (RepeatPreference) findPreference("setRepeat");
         mSnoozePref = (SeekBarPreference) findPreference("snooze");
-        mSnoozePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-          public boolean onPreferenceChange(Preference p, Object newValue) {
-            p.setSummary( mSnoozePref.getText((Integer)newValue) );
-            return true;
-          }
-        });
         mDurationPref = (SeekBarPreference) findPreference("duration");
-        mCaptchaSnoozePref = (ListPreference) findPreference("captcha_snooze");
-        mCaptchaDismissPref = (ListPreference) findPreference("captcha_duration");
         mVolumePref = (SeekBarPreference) findPreference("volume");
         mCrescendoPref = (SeekBarPreference) findPreference("crescendo");
         mDelayPref = (SeekBarPreference) findPreference("delay");
+        mCaptchaSnoozePref = (ListPreference) findPreference("captcha_snooze");
+        mCaptchaDismissPref = (ListPreference) findPreference("captcha_dismiss");
 
 
         Intent i = getIntent();
@@ -168,6 +176,17 @@ public class SetAlarm extends PreferenceActivity
 
         mAlarmPref.setRingtoneChangedListener(new RingtoneChangedListener());
         mRepeatPref.setOnRepeatChangedObserver(new OnRepeatChangedObserver());
+
+        SeekBarChangeListener seek_bar_listener = new SeekBarChangeListener();
+        mSnoozePref.setOnPreferenceChangeListener(seek_bar_listener);
+        mDurationPref.setOnPreferenceChangeListener(seek_bar_listener);
+        mVolumePref.setOnPreferenceChangeListener(seek_bar_listener);
+        mCrescendoPref.setOnPreferenceChangeListener(seek_bar_listener);
+        mDelayPref.setOnPreferenceChangeListener(seek_bar_listener);
+
+        CaptchaChangeListener captcha_listener = new CaptchaChangeListener();
+        mCaptchaSnoozePref.setOnPreferenceChangeListener(captcha_listener);
+        mCaptchaDismissPref.setOnPreferenceChangeListener(captcha_listener);
     }
 
     @Override
@@ -218,6 +237,8 @@ public class SetAlarm extends PreferenceActivity
             saveAlarm(true);
         } else if (preference == mVibratePref) {
             saveAlarm(false);
+        } else if (preference == mVibrateOnlyPref) {
+            saveAlarm(false);
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -252,6 +273,14 @@ public class SetAlarm extends PreferenceActivity
         mAlarmOnPref.setChecked(enabled);
         mDaysOfWeek.set(daysOfWeek);
         mVibratePref.setChecked(vibrate);
+        mVibrateOnlyPref.setChecked(vibrate_only);
+        mSnoozePref.setValue(snooze); updateSeekBarPref(mSnoozePref);
+        mDurationPref.setValue(duration); updateSeekBarPref(mDurationPref);
+        mDelayPref.setValue(delay); updateSeekBarPref(mDelayPref);
+        mVolumePref.setValue(volume); updateSeekBarPref(mVolumePref);
+        mCrescendoPref.setValue(crescendo); updateSeekBarPref(mCrescendoPref);
+        mCaptchaSnoozePref.setValue(String.valueOf(captcha_snooze)); updateCaptchaPref(mCaptchaSnoozePref);
+        mCaptchaDismissPref.setValue(String.valueOf(captcha_dismiss)); updateCaptchaPref(mCaptchaDismissPref);
 
         if (alert == null || alert.length() == 0) {
             if (Log.LOGV) Log.v("****** reportAlarm null or 0-length alert");
@@ -301,6 +330,15 @@ public class SetAlarm extends PreferenceActivity
         mRepeatPref.setSummary(mDaysOfWeek.toString(this, true));
     }
 
+    private void updateSeekBarPref(SeekBarPreference pref)
+    {
+      pref.setSummary( pref.getText() );
+    }
+    private void updateCaptchaPref(ListPreference pref)
+    {
+      pref.setSummary( pref.getEntry() );
+    }
+
     private void saveAlarm(boolean popToast) {
         saveAlarm(popToast, mLabel.getText());
     }
@@ -314,6 +352,11 @@ public class SetAlarm extends PreferenceActivity
             String alertString = mAlarmPref.mAlert.toString();
             saveAlarm(this, mId, mAlarmOnPref.isChecked(), mHour, mMinutes,
                       mDaysOfWeek, mVibratePref.isChecked(), label, alertString,
+                      mSnoozePref.getValue(), mDurationPref.getValue(), mDelayPref.getValue(), 
+                      mVibrateOnlyPref.isChecked(), 
+                      mVolumePref.getValue(), mCrescendoPref.getValue(), 
+                      Integer.valueOf(mCaptchaSnoozePref.getValue()), 
+                      Integer.valueOf(mCaptchaDismissPref.getValue()), 
                       popToast);
         }
     }
@@ -324,14 +367,20 @@ public class SetAlarm extends PreferenceActivity
      */
     private static void saveAlarm(
             Context context, int id, boolean enabled, int hour, int minute,
-            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String label,
-            String alert, boolean popToast) {
+            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String label, String alert, 
+            int snooze, int duration, int delay, boolean vibrate_only, int volume, int crescendo,
+            int captcha_snooze, int captcha_dismiss,
+            
+            boolean popToast) {
         if (Log.LOGV) Log.v("** saveAlarm " + id + " " + label + " " + enabled
                 + " " + hour + " " + minute + " vibe " + vibrate);
 
         // Fix alert string first
         Alarms.setAlarm(context, id, enabled, hour, minute, daysOfWeek, vibrate,
-                label, alert);
+                label, alert,
+                snooze, duration, delay, vibrate_only, volume, crescendo,
+                captcha_snooze, captcha_dismiss
+                );
 
         if (enabled && popToast) {
             popAlarmSetToast(context, hour, minute, daysOfWeek);
@@ -423,12 +472,14 @@ public class SetAlarm extends PreferenceActivity
             finish();
             return true;
         }
+        /*
         if (AlarmClock.DEBUG) {
             if (item == mTestAlarmItem) {
                 setTestAlarm();
                 return true;
             }
         }
+        */
 
         return false;
     }
@@ -438,6 +489,7 @@ public class SetAlarm extends PreferenceActivity
      * Test code: this is disabled for production build.  Sets
      * this alarm to go off on the next minute
      */
+     /*
     void setTestAlarm() {
 
         // start with now
@@ -453,5 +505,6 @@ public class SetAlarm extends PreferenceActivity
         saveAlarm(this, mId, true, hour, minutes, mDaysOfWeek, true,
                 mLabel.getText(), mAlarmPref.mAlert.toString(), true);
     }
+    */
 
 }

@@ -60,6 +60,11 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
       mMax = attrs.getAttributeIntValue(androidns,"max", 100);
     }
 
+    if (shouldPersist())
+      setValue( getPersistedInt(mDefault) );
+    else
+      setValue( mDefault );
+    
   }
   @Override 
   protected View onCreateDialogView() {
@@ -85,75 +90,81 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
     mSeekBar.setOnSeekBarChangeListener(this);
     layout.addView(mSeekBar, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-    mValue = mDefault;
-    if (shouldPersist())
-      mValue = getPersistedInt(mDefault);
-
     mSeekBar.setMax(mMax);
-    mSeekBar.setProgress(mValue);
-    set_value(mValue);
     return layout;
   }
   @Override 
   protected void onBindDialogView(View v) {
     super.onBindDialogView(v);
-    mSeekBar.setMax(mMax);
-    mSeekBar.setProgress(mValue);
+    setValue(mValue);
   }
   @Override
   protected void onSetInitialValue(boolean restore, Object defaultValue)  
   {
     super.onSetInitialValue(restore, defaultValue);
+    int value;
     if (restore) 
-      mValue = shouldPersist() ? getPersistedInt(mDefault) : mDefault;
+      value = shouldPersist() ? getPersistedInt(mDefault) : 0;
     else 
-      mValue = (Integer)defaultValue;
-    set_value(mValue);
+      value = (Integer)defaultValue;
+    setValue(value);
   }
 
   public void onProgressChanged(SeekBar seek, int value, boolean fromTouch)
   {
-    set_value(value);
+    mValue = value;
 
-
-    if (mEntries != null) {
-      value = Integer.valueOf(mEntries[value]);
-    }
+    mValueText.setText(getText());
 
     if (shouldPersist())
-      persistInt(value);
-    callChangeListener(new Integer(value));
+      persistInt(getValue());
+
+    callChangeListener(getValue());
   }
   public void onStartTrackingTouch(SeekBar seek) {}
   public void onStopTrackingTouch(SeekBar seek) {}
 
   public void setMax(int max) { mMax = max; }
   public int getMax() { return mMax; }
-  public void setProgress(int progress) { 
-    mValue = progress;
-    if (mSeekBar != null)
-      mSeekBar.setProgress(progress); 
-  }
-  public int getProgress() { return mValue; }
 
-  public String getText(int value)
+  public String getText()
   {
+    int value = getValue();
     if (value == 0 && mZeroText != null)  {
       return mZeroText;
     }
-
-    String t;
-    if (mEntries != null) {
-      t = mEntries[value]; 
-    }
-    else {
-      t = String.valueOf(value);
-    }
+    String t = String.valueOf( value );
     return mSuffix == null ? t : t+" "+mSuffix;
   }
-  private void set_value(int value)
+
+  public void setValue(int value)
   {
-    mValueText.setText(getText(value));
+    if (mEntries != null) {
+      mValue = 0;
+      int i;
+      for (i=0; i < mEntries.length; i++) {
+        if (mEntries[i].equals( String.valueOf(value) )) {
+          mValue = i;
+          break;
+        }
+      }
+    }
+    else {
+      mValue = value;
+    }
+    if (mSeekBar != null)
+      mSeekBar.setProgress(mValue);
+    if (mValueText != null)
+      mValueText.setText(getText());
+  }
+  public int getValue()
+  {
+    if (mEntries != null) {
+      return Integer.valueOf( mEntries[mValue] );
+    }
+    else {
+      return mValue;
+    }
   }
 }
 

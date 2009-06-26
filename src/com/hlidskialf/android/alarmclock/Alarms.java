@@ -428,8 +428,10 @@ public class Alarms {
      */
     public synchronized static void setAlarm(
             Context context, int id, boolean enabled, int hour, int minutes,
-            DaysOfWeek daysOfWeek, boolean vibrate, String message,
-            String alert) {
+            DaysOfWeek daysOfWeek, boolean vibrate, String message, String alert,
+            int snooze, int duration, int delay, boolean vibrate_only, int volume, int crescendo,
+            int captcha_snooze, int captcha_dismiss
+            ) {
 
         ContentValues values = new ContentValues(8);
         ContentResolver resolver = context.getContentResolver();
@@ -447,6 +449,14 @@ public class Alarms {
         values.put(AlarmColumns.VIBRATE, vibrate);
         values.put(AlarmColumns.MESSAGE, message);
         values.put(AlarmColumns.ALERT, alert);
+        values.put(AlarmColumns.SNOOZE, snooze);
+        values.put(AlarmColumns.DURATION, duration);
+        values.put(AlarmColumns.DELAY, delay);
+        values.put(AlarmColumns.VIBRATE_ONLY, vibrate_only);
+        values.put(AlarmColumns.VOLUME, volume);
+        values.put(AlarmColumns.CRESCENDO, crescendo);
+        values.put(AlarmColumns.CAPTCHA_SNOOZE, captcha_snooze);
+        values.put(AlarmColumns.CAPTCHA_DISMISS, captcha_dismiss);
         resolver.update(ContentUris.withAppendedId(AlarmColumns.CONTENT_URI, id),
                         values, null, null);
 
