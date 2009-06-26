@@ -32,11 +32,14 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.preference.ListPreference;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.hlidskialf.android.preference.SeekBarPreference;
 
 /**
  * Manages each alarm
@@ -50,6 +53,13 @@ public class SetAlarm extends PreferenceActivity
     private AlarmPreference mAlarmPref;
     private CheckBoxPreference mVibratePref;
     private RepeatPreference mRepeatPref;
+    private SeekBarPreference mSnoozePref;
+    private SeekBarPreference mDurationPref;
+    private ListPreference mCaptchaSnoozePref;
+    private ListPreference mCaptchaDismissPref;
+    private SeekBarPreference mVolumePref;
+    private SeekBarPreference mCrescendoPref;
+    private SeekBarPreference mDelayPref;
     private ContentObserver mAlarmsChangeObserver;
     private MenuItem mDeleteAlarmItem;
     private MenuItem mTestAlarmItem;
@@ -57,6 +67,13 @@ public class SetAlarm extends PreferenceActivity
     private int mId;
     private int mHour;
     private int mMinutes;
+    private int mSnooze;
+    private int mDuration;
+    private int mCaptchaSnooze;
+    private int mCaptchaDismiss;
+    private int mVolume;
+    private int mCrescendo;
+    private int mDelay;
     private Alarms.DaysOfWeek mDaysOfWeek = new Alarms.DaysOfWeek();
 
     private boolean mReportAlarmCalled;
@@ -115,6 +132,20 @@ public class SetAlarm extends PreferenceActivity
         mAlarmPref = (AlarmPreference) findPreference("alarm");
         mVibratePref = (CheckBoxPreference) findPreference("vibrate");
         mRepeatPref = (RepeatPreference) findPreference("setRepeat");
+        mSnoozePref = (SeekBarPreference) findPreference("snooze");
+        mSnoozePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+          public boolean onPreferenceChange(Preference p, Object newValue) {
+            p.setSummary( mSnoozePref.getText((Integer)newValue) );
+            return true;
+          }
+        });
+        mDurationPref = (SeekBarPreference) findPreference("duration");
+        mCaptchaSnoozePref = (ListPreference) findPreference("captcha_snooze");
+        mCaptchaDismissPref = (ListPreference) findPreference("captcha_duration");
+        mVolumePref = (SeekBarPreference) findPreference("volume");
+        mCrescendoPref = (SeekBarPreference) findPreference("crescendo");
+        mDelayPref = (SeekBarPreference) findPreference("delay");
+
 
         Intent i = getIntent();
         mId = i.getIntExtra(Alarms.ID, -1);

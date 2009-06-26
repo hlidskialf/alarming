@@ -136,11 +136,10 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
   }
   public int getProgress() { return mValue; }
 
-  private void set_value(int value)
+  public String getText(int value)
   {
     if (value == 0 && mZeroText != null)  {
-      mValueText.setText(mZeroText);
-      return;
+      return mZeroText;
     }
 
     String t;
@@ -150,7 +149,11 @@ public class SeekBarPreference extends DialogPreference implements SeekBar.OnSee
     else {
       t = String.valueOf(value);
     }
-    mValueText.setText(mSuffix == null ? t : t+" "+mSuffix);
+    return mSuffix == null ? t : t+" "+mSuffix;
+  }
+  private void set_value(int value)
+  {
+    mValueText.setText(getText(value));
   }
 }
 
