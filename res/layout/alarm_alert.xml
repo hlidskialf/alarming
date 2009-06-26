@@ -22,43 +22,29 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/dismiss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp"
+        android:layout_weight="3"
+        android:text="@string/alarm_alert_dismiss_text" />
+
     <LinearLayout
         android:id="@+id/clockView"
         android:layout_width="208dip"
         android:layout_height="wrap_content"
         android:gravity="center"/> 
 
-    <LinearLayout
-        android:layout_width="fill_parent" 
+    <Button
+        android:id="@+id/snooze"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp">
-
-        <Button
-            android:id="@+id/snooze"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="24dp"
-            android:layout_weight="3"
-            android:text="@string/alarm_alert_snooze_text" />
-
-        <!-- blank stretchable view -->
-        <View
-            android:layout_width="2dip"
-            android:layout_height="2dip"
-            android:layout_gravity="fill_horizontal" 
-            android:layout_weight="1"/>
-        
-        <Button
-            android:id="@+id/dismiss"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="24dp"
-            android:layout_weight="3"
-            android:text="@string/alarm_alert_dismiss_text" />
-
-    </LinearLayout>
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp"
+        android:layout_weight="3"
+        android:text="@string/alarm_alert_snooze_text" />
 
     <TextView android:id="@+id/silencedText"
         android:layout_width="wrap_content"

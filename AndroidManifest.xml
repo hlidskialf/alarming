@@ -58,6 +58,12 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/analog_appwidget" />
         </receiver>
+
+        <activity android:name="BedClock" 
+                  android:screenOrientation="landscape" 
+                  android:theme="@style/NoTitle_FullScreen" 
+                  />
+
     </application>
 </manifest>
 

@@ -206,12 +206,19 @@
 
 
     <!-- alarming strings -->
+    <string name="alarm_list_empty">No alarms.</string>
+
+    <!-- quick snooze strings -->
+    <string name="quick_alarm">Quick Snooze</string>
+    <string name="snooze_message_text">Snoozing until %s</string>
+    <string name="snooze_dismissed">Snooze dismissed.</string>
 
     <string name="percent">%</string>
     <string name="milliseconds">ms</string>
     <string name="seconds">seconds</string>
     <string name="minutes_suffix">minutes</string>
 
+    <!-- additional alarm preferences -->
     <string name="vibrate_only">Silent Alarm</string>
     <string name="snooze">Snooze</string>
     <string name="snooze_disabled">Snooze disabled</string>
@@ -224,6 +231,11 @@
     <string name="delay_disabled">Dont pause</string>
     <string name="captcha_snooze">Captcha on Snooze</string>
     <string name="captcha_dismiss">Captcha on Dismiss</string>
+
+    <!-- bedclock strings -->
+    <string name="bed_clock">Bed Clock</string>
+    <string name="next_animation">Next animation</string>
+    <string name="flip_orientation">Flip orientation</string>
 
     <!-- captcha types -->
     <string-array name="captcha_types">

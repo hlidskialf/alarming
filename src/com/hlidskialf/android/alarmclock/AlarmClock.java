@@ -39,8 +39,11 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
+import android.widget.Toast;
+import android.widget.SeekBar;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * AlarmClock application.
@@ -49,8 +52,11 @@ public class AlarmClock extends Activity {
 
     final static String PREFERENCES = "AlarmClock";
     final static int SET_ALARM = 1;
+    final static int BED_CLOCK = 2;
     final static String PREF_CLOCK_FACE = "face";
     final static String PREF_SHOW_CLOCK = "show_clock";
+    final static String PREF_SHOW_QUICK_ALARM = "show_quick_alarm";
+    final static String PREF_LAST_QUICK_ALARM = "last_quick_alarm";
 
     /** Cap alarm count at this number */
     final static int MAX_ALARM_COUNT = 12;
@@ -64,9 +70,10 @@ public class AlarmClock extends Activity {
     private ViewGroup mClockLayout;
     private View mClock = null;
     private MenuItem mAddAlarmItem;
-    private MenuItem mToggleClockItem;
+    private MenuItem mBedClockItem;
     private ListView mAlarmsList;
     private Cursor mCursor;
+    private View mQuickAlarm;
 
     /**
      * Which clock face to show
@@ -188,6 +195,7 @@ public class AlarmClock extends Activity {
                             public void onClick(DialogInterface d, int w) {
                                 Alarms.deleteAlarm(AlarmClock.this,
                                         item.getItemId());
+                                updateEmptyVisibility();
                             }
                         })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -240,7 +248,18 @@ public class AlarmClock extends Activity {
                 }
             });
 
+        mQuickAlarm = findViewById(R.id.quick_alarm);
+        mQuickAlarm.setOnClickListener(new View.OnClickListener() {
+          public void onClick(View v) {
+            showQuickAlarmDialog();
+          }
+        });
+
+        setVolumeControlStream(android.media.AudioManager.STREAM_ALARM);
+
         setClockVisibility(mPrefs.getBoolean(PREF_SHOW_CLOCK, true));
+        setQuickAlarmVisibility(mPrefs.getBoolean(PREF_SHOW_QUICK_ALARM, true));
+
     }
 
     @Override
@@ -255,6 +274,9 @@ public class AlarmClock extends Activity {
                 mFace = face;
             inflateClock();
         }
+
+        updateSnoozeVisibility();
+        updateEmptyVisibility();
     }
 
     @Override
@@ -279,8 +301,8 @@ public class AlarmClock extends Activity {
         mAddAlarmItem = menu.add(0, 0, 0, R.string.add_alarm);
         mAddAlarmItem.setIcon(android.R.drawable.ic_menu_add);
 
-        mToggleClockItem = menu.add(0, 0, 0, R.string.hide_clock);
-        mToggleClockItem.setIcon(R.drawable.ic_menu_clock_face);
+        mBedClockItem = menu.add(0, 0, 0, R.string.bed_clock);
+        mBedClockItem.setIcon(R.drawable.ic_menu_clock_face);
         
         MenuItem settingsItem = menu.add(0, 0, 0, R.string.settings);
         settingsItem.setIcon(android.R.drawable.ic_menu_preferences);
@@ -297,8 +319,6 @@ public class AlarmClock extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         mAddAlarmItem.setVisible(mAlarmsList.getChildCount() < MAX_ALARM_COUNT);
-        mToggleClockItem.setTitle(getClockVisibility() ? R.string.hide_clock :
-                                  R.string.show_clock);
         return true;
     }
 
@@ -314,9 +334,9 @@ public class AlarmClock extends Activity {
             intent.putExtra(Alarms.ID, newId);
             startActivityForResult(intent, SET_ALARM);
             return true;
-        } else if (item == mToggleClockItem) {
-            setClockVisibility(!getClockVisibility());
-            saveClockVisibility();
+        } else if (item == mBedClockItem) {
+            Intent intent = new Intent(AlarmClock.this, BedClock.class);
+            startActivityForResult(intent, BED_CLOCK);
             return true;
         }
 
@@ -335,4 +355,81 @@ public class AlarmClock extends Activity {
     private void saveClockVisibility() {
         mPrefs.edit().putBoolean(PREF_SHOW_CLOCK, getClockVisibility()).commit();
     }
+
+    private void setQuickAlarmVisibility(boolean visible) {
+        mQuickAlarm.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private void showQuickAlarmDialog() {
+      View layout = mFactory.inflate(R.layout.quick_alarm_dialog, null);
+      final TextView text1 = (TextView)layout.findViewById(android.R.id.text1);
+      final SeekBar slider = (SeekBar)layout.findViewById(android.R.id.input);
+      int last_snooze = mPrefs.getInt(PREF_LAST_QUICK_ALARM, 0);
+      slider.setMax(59);
+      slider.setProgress(last_snooze);
+      text1.setText(AlarmClock.this.getString(R.string.minutes, String.valueOf(last_snooze+1)));
+      slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        public void onProgressChanged(SeekBar seek, int value, boolean fromTouch) {
+          text1.setText(AlarmClock.this.getString(R.string.minutes, String.valueOf(value+1)));
+        }
+        public void onStartTrackingTouch(SeekBar seek) {}
+        public void onStopTrackingTouch(SeekBar seek) {}
+      });
+
+      AlertDialog d = new AlertDialog.Builder(this)
+        .setTitle(R.string.quick_alarm)
+        .setView(layout)
+        .setNegativeButton(android.R.string.cancel, null)
+        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int which) {
+            int snooze_min = slider.getProgress() + 1;
+            long snoozeTarget = System.currentTimeMillis() + 1000*60*snooze_min;
+            long nextAlarm = Alarms.calculateNextAlert(AlarmClock.this).getAlert();
+            if (nextAlarm < snoozeTarget) {
+              // alarm will fire before snooze will...
+            } else {
+              Alarms.saveSnoozeAlert(AlarmClock.this, 0, snoozeTarget, AlarmClock.this.getString(R.string.quick_alarm));
+              Alarms.setNextAlert(AlarmClock.this);
+              Toast.makeText(AlarmClock.this, 
+                getString(R.string.alarm_alert_snooze_set, snooze_min),
+                Toast.LENGTH_LONG).show();
+              updateSnoozeVisibility();
+              mPrefs.edit().putInt(PREF_LAST_QUICK_ALARM, snooze_min-1).commit();
+            }
+          }
+        })
+        .show();
+    }
+
+    private void updateSnoozeVisibility() {
+      long next_snooze = mPrefs.getLong(Alarms.PREF_SNOOZE_TIME, 0);
+      View v = (View)findViewById(R.id.snooze_message);
+      if (next_snooze != 0) {
+          TextView tv = (TextView)v.findViewById(R.id.snooze_message_text);
+          Calendar c = new GregorianCalendar();
+          c.setTimeInMillis(next_snooze);
+          String snooze_time = Alarms.formatTime(AlarmClock.this, c);
+          tv.setText(getString(R.string.snooze_message_text, snooze_time));
+
+          v.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+              v.setVisibility(View.GONE);
+              Alarms.disableSnoozeAlert(AlarmClock.this);
+              Toast.makeText(AlarmClock.this, getString(R.string.snooze_dismissed), Toast.LENGTH_LONG).show();
+              Alarms.setNextAlert(AlarmClock.this);
+            }
+          });
+          v.setVisibility(View.VISIBLE);
+      }
+      else {
+          v.setVisibility(View.GONE);
+      }
+    }
+    private void updateEmptyVisibility() {
+      View v = findViewById(R.id.alarms_list_empty);
+      if (v != null) 
+        v.setVisibility(mAlarmsList.getAdapter().getCount() < 1 ? View.VISIBLE : View.GONE);
+    }
+
+
 }
