@@ -49,6 +49,13 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
     private String mAlert;
     private Alarms.DaysOfWeek mDaysOfWeek;
     private boolean mVibrate;
+    private int mDuration;
+    private int mDelay;
+    private boolean mVibrateOnly;
+    private float mVolume, mCurVolume = -1;
+    private int mCrescendo;
+    private Context mContext;
+
     private boolean mPlaying = false;
     private Vibrator mVibrator;
     private MediaPlayer mMediaPlayer;
@@ -57,6 +64,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
     // Internal messages
     private static final int KILLER = 1000;
     private static final int PLAY   = 1001;
+    private static final int INC_VOL= 1002;
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -71,9 +79,61 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
                 case PLAY:
                     play((Context) msg.obj, msg.arg1);
                     break;
+                case INC_VOL: 
+                    if (mMediaPlayer != null) {
+                      mCurVolume += (Float)msg.obj;
+                      mMediaPlayer.setVolume(mCurVolume, mCurVolume);
+                    }
+                    break;
             }
         }
     };
+
+    private Runnable mLoopCallback = new Runnable() {
+      public void run() {
+        if (mPlaying)
+          play(mContext, mAlarmId);
+        android.util.Log.v("Klaxon", "run tick");
+      } 
+    };
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
+      public void onCompletion(MediaPlayer player) {
+        player.stop();
+        android.util.Log.v("Klaxon", "loop tick: "+mDelay);
+        if (mPlaying)
+          mHandler.postDelayed(mLoopCallback, mDelay);
+      }
+    };
+    private class CrescendoThread extends Thread {
+      private int num_steps = 10;
+      private int mStepDelay;
+      private float mStepDelta;
+      private Handler mCrescendoHandler;
+      private boolean mRunning = false;
+      public CrescendoThread() {
+        mStepDelay = mCrescendo / num_steps;
+        mStepDelta = mVolume / (float)num_steps;
+        mCrescendoHandler = new Handler();
+      }
+      public void start() {
+        mRunning = true;
+        super.start();
+      }
+      public void run() {
+        if (!mRunning) return;
+        android.util.Log.v("Klaxon", "crescendo tick: "+mCurVolume+"/"+mVolume);
+        if (mCurVolume < mVolume) {
+          mCurVolume += mStepDelta;
+          mHandler.sendMessage(mHandler.obtainMessage(INC_VOL, (Float)mStepDelta));
+          mCrescendoHandler.postDelayed(CrescendoThread.this, mStepDelay);
+        }
+      }
+      public void done() {
+        mRunning = false;
+        mCrescendoHandler.removeCallbacks(CrescendoThread.this);
+      }
+    };
+    private CrescendoThread mCrescendoThread;
 
     AlarmKlaxon() {
     }
@@ -90,6 +150,11 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
         mAlert = alert;
         mDaysOfWeek = daysOfWeek;
         mVibrate = vibrate;
+        mDuration = duration*1000;
+        mDelay = delay;
+        mVibrateOnly = vibrate_only;
+        mVolume = (float)volume/100f;
+        mCrescendo = crescendo*1000;
     }
 
     public void postPlay(final Context context, final int alarmId) {
@@ -107,6 +172,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
 
         if (mPlaying) stop(context, false);
 
+        mContext = context;
         mAlarmId = alarmId;
 
         /* this will call reportAlarm() callback */
@@ -158,7 +224,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
         }
 
         /* Start the vibrator after everything is ok with the media player */
-        if (mVibrate) {
+        if (mVibrateOnly || mVibrate) {
             mVibrator.vibrate(sVibratePattern, 0);
         } else {
             mVibrator.cancel();
@@ -173,7 +239,25 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
             throws java.io.IOException, IllegalArgumentException,
                    IllegalStateException {
         player.setAudioStreamType(AudioManager.STREAM_ALARM);
-        player.setLooping(true);
+
+        if (mDelay > 0) {
+          player.setLooping(false);
+          player.setOnCompletionListener(mCompletionListener);
+        }
+        else
+          player.setLooping(true);
+
+        if (mCrescendo > 0) {
+          if (mCurVolume == -1) {
+            mCurVolume = 0.05f;
+            player.setVolume(mCurVolume, mCurVolume);
+            mCrescendoThread = new CrescendoThread();
+            mCrescendoThread.start();
+          }
+        }
+        else 
+          player.setVolume(mVolume, mVolume);
+
         player.prepare();
         player.start();
     }
@@ -235,8 +319,8 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
      * popped, so the user will know that the alarm tripped.
      */
     private void enableKiller() {
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(KILLER),
-                1000 * ALARM_TIMEOUT_SECONDS);
+      if (mDuration > 0)
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(KILLER), mDuration);
     }
 
     private void disableKiller() {
