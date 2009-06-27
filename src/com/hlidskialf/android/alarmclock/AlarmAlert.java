@@ -35,6 +35,8 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
+import com.hlidskialf.android.hardware.ShakeListener;
+
 /**
  * Alarm Clock alarm alert: pops visible indicator and plays alarm
  * tone
@@ -55,6 +57,8 @@ public class AlarmAlert extends Activity {
     private AlarmKlaxon mKlaxon;
     private int mAlarmId;
     private String mLabel;
+
+    private ShakeListener mShakeListener;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -117,6 +121,13 @@ public class AlarmAlert extends Activity {
         });
 
         updateLayout();
+
+        mShakeListener = new ShakeListener(this);
+        mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
+          public void onShake() {
+            snooze();
+          }
+        });
     }
 
     private void setTitleFromIntent(Intent i) {
@@ -256,6 +267,8 @@ public class AlarmAlert extends Activity {
         super.onResume();
         if (Log.LOGV) Log.v("AlarmAlert.onResume()");
         disableKeyguard();
+
+        mShakeListener.resume();
     }
 
     @Override
@@ -267,6 +280,8 @@ public class AlarmAlert extends Activity {
         // We might have been killed by the KillerCallback so always release
         // the lock and keyguard.
         releaseLocks();
+
+        mShakeListener.pause();
     }
 
     @Override
