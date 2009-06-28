@@ -64,6 +64,7 @@ public class SetAlarm extends PreferenceActivity
     private ContentObserver mAlarmsChangeObserver;
     private MenuItem mDeleteAlarmItem;
     private MenuItem mTestAlarmItem;
+    private MenuItem mPreviewAlarmItem;
 
     private int mId;
     private int mHour;
@@ -455,6 +456,9 @@ public class SetAlarm extends PreferenceActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
+        mPreviewAlarmItem = menu.add(0, 0, 0, R.string.preview_alarm);
+        mPreviewAlarmItem.setIcon(android.R.drawable.ic_menu_view);
+
         mDeleteAlarmItem = menu.add(0, 0, 0, R.string.delete_alarm);
         mDeleteAlarmItem.setIcon(android.R.drawable.ic_menu_delete);
 
@@ -470,6 +474,12 @@ public class SetAlarm extends PreferenceActivity
         if (item == mDeleteAlarmItem) {
             Alarms.deleteAlarm(this, mId);
             finish();
+            return true;
+        }
+        else
+        if (item == mPreviewAlarmItem) {
+            Alarms.enableAlert(this, mId, 
+              getString(R.string.preview_alarm), System.currentTimeMillis());
             return true;
         }
         /*

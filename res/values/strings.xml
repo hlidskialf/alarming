@@ -208,6 +208,10 @@
     <!-- alarming strings -->
     <string name="alarm_list_empty">No alarms.</string>
 
+    <!-- context menu -->
+    <string name="edit_alarm">Edit alarm</string>
+    <string name="preview_alarm">Preview alarm</string>
+
     <!-- quick snooze strings -->
     <string name="quick_alarm">Quick Snooze</string>
     <string name="snooze_message_text">Snoozing until %s</string>

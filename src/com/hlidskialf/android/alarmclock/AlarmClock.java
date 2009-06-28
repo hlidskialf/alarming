@@ -58,6 +58,10 @@ public class AlarmClock extends Activity {
     final static String PREF_SHOW_QUICK_ALARM = "show_quick_alarm";
     final static String PREF_LAST_QUICK_ALARM = "last_quick_alarm";
 
+    final static int MENU_ITEM_EDIT=1;
+    final static int MENU_ITEM_DELETE=2;
+    final static int MENU_ITEM_PREVIEW=3;
+
     /** Cap alarm count at this number */
     final static int MAX_ALARM_COUNT = 12;
 
@@ -178,7 +182,9 @@ public class AlarmClock extends Activity {
                     public void onCreateContextMenu(ContextMenu menu, View view,
                                                     ContextMenuInfo menuInfo) {
                         menu.setHeaderTitle(Alarms.formatTime(AlarmClock.this, c));
-                        MenuItem deleteAlarmItem = menu.add(0, id, 0, R.string.delete_alarm);
+                        MenuItem editAlarmItem = menu.add(0, id, MENU_ITEM_EDIT, R.string.edit_alarm);
+                        MenuItem deleteAlarmItem = menu.add(0, id, MENU_ITEM_DELETE, R.string.delete_alarm);
+                        MenuItem previewAlarmItem = menu.add(0, id, MENU_ITEM_PREVIEW, R.string.preview_alarm);
                     }
                 });
         }
@@ -186,6 +192,13 @@ public class AlarmClock extends Activity {
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
+      switch(item.getOrder()) {
+      case MENU_ITEM_EDIT:
+        Intent intent = new Intent(AlarmClock.this, SetAlarm.class);
+        intent.putExtra(Alarms.ID, item.getItemId());
+        startActivityForResult(intent, SET_ALARM);
+        break;
+      case MENU_ITEM_DELETE:
         // Confirm that the alarm will be deleted.
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.delete_alarm))
@@ -200,7 +213,13 @@ public class AlarmClock extends Activity {
                         })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
-        return true;
+        break;
+      case MENU_ITEM_PREVIEW:
+        Alarms.enableAlert(this, item.getItemId(), 
+          getString(R.string.preview_alarm), System.currentTimeMillis());
+        break;
+      }
+      return true;
     }
 
     @Override
