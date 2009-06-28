@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent" 
+  android:layout_height="wrap_content" 
+  android:padding="6dp"
+  android:stretchColumns="true"
+  >
+  <TableRow>
+    <TextView android:id="@+id/question_1_tens"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+      android:layout_column="2"
+      android:textSize="30sp"
+      android:gravity="center"
+      />
+    <TextView android:id="@+id/question_1_ones"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+      android:layout_column="3"
+      android:textSize="30sp"
+      android:gravity="center"
+      />
+  </TableRow>
+  <TableRow>
+    <TextView android:id="@+id/question_sign"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+      android:layout_column="1"
+      android:textSize="30sp"
+      android:gravity="center"
+      android:text="+"
+      />
+    <TextView android:id="@+id/question_2_tens"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+      android:layout_column="2"
+      android:textSize="30sp"
+      android:gravity="center"
+      />
+    <TextView android:id="@+id/question_2_ones"
+      android:layout_width="fill_parent" 
+      android:layout_height="wrap_content" 
+      android:layout_column="3"
+      android:textSize="30sp"
+      android:gravity="center"
+      />
+  </TableRow>
+  <TableRow>
+    <com.hlidskialf.android.widget.NumberPicker android:id="@+id/answer_hundreds"
+      android:layout_width="70dp"
+      android:layout_height="wrap_content" 
+      android:layout_gravity="center"
+      android:layout_column="1"
+      />
+    <com.hlidskialf.android.widget.NumberPicker android:id="@+id/answer_tens"
+      android:layout_width="70dp"
+      android:layout_height="wrap_content" 
+      android:layout_column="2"
+      />
+    <com.hlidskialf.android.widget.NumberPicker android:id="@+id/answer_ones"
+      android:layout_width="70dp"
+      android:layout_height="wrap_content" 
+      android:layout_column="3"
+      />
+  </TableRow>
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content" 
+      android:orientation="horizontal"
+      >
+      <Button android:id="@android:id/button1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" 
+        android:layout_weight="1"
+        android:text="@android:string/ok"
+        />
+      <Button android:id="@android:id/button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" 
+        android:layout_weight="1"
+        android:text="@android:string/cancel"
+        />
+  </LinearLayout>
+</TableLayout>

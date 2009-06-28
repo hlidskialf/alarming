@@ -93,13 +93,11 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
       public void run() {
         if (mPlaying)
           play(mContext, mAlarmId);
-        android.util.Log.v("Klaxon", "run tick");
       } 
     };
     private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
       public void onCompletion(MediaPlayer player) {
         player.stop();
-        android.util.Log.v("Klaxon", "loop tick: "+mDelay);
         if (mPlaying)
           mHandler.postDelayed(mLoopCallback, mDelay);
       }
@@ -121,7 +119,6 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
       }
       public void run() {
         if (!mRunning) return;
-        android.util.Log.v("Klaxon", "crescendo tick: "+mCurVolume+"/"+mVolume);
         if (mCurVolume < mVolume) {
           mCurVolume += mStepDelta;
           mHandler.sendMessage(mHandler.obtainMessage(INC_VOL, (Float)mStepDelta));
@@ -180,6 +177,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
 
         if (Log.LOGV) Log.v("AlarmKlaxon.play() " + mAlarmId + " alert " + mAlert);
 
+      if (!mVibrateOnly) {
         // TODO: Reuse mMediaPlayer instead of creating a new one and/or use
         // RingtoneManager.
         mMediaPlayer = new MediaPlayer();
@@ -222,6 +220,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
                 Log.e("Failed to play fallback ringtone", ex2);
             }
         }
+      }
 
         /* Start the vibrator after everything is ok with the media player */
         if (mVibrateOnly || mVibrate) {

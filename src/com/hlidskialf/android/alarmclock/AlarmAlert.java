@@ -17,8 +17,10 @@
 package com.hlidskialf.android.alarmclock;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -41,7 +43,7 @@ import com.hlidskialf.android.hardware.ShakeListener;
  * Alarm Clock alarm alert: pops visible indicator and plays alarm
  * tone
  */
-public class AlarmAlert extends Activity {
+public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
 
     private static final int SNOOZE_MINUTES = 10;
     private static final int UNKNOWN = 0;
@@ -59,6 +61,9 @@ public class AlarmAlert extends Activity {
     private String mLabel;
 
     private ShakeListener mShakeListener;
+    private int mSnooze;
+    private int mCaptchaSnooze, mCaptchaDismiss;
+    private boolean mCaptchaDone = false;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -92,6 +97,8 @@ public class AlarmAlert extends Activity {
         Intent i = getIntent();
         mAlarmId = i.getIntExtra(Alarms.ID, -1);
 
+        Alarms.getAlarm(getContentResolver(), this, mAlarmId);
+
         mKlaxon = new AlarmKlaxon();
         mKlaxon.postPlay(this, mAlarmId);
 
@@ -122,12 +129,14 @@ public class AlarmAlert extends Activity {
 
         updateLayout();
 
+        /*
         mShakeListener = new ShakeListener(this);
         mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
           public void onShake() {
             snooze();
           }
         });
+        */
     }
 
     private void setTitleFromIntent(Intent i) {
@@ -164,10 +173,17 @@ public class AlarmAlert extends Activity {
             ((DigitalClock) clockLayout).setAnimate();
         }
 
+
         /* snooze behavior: pop a snooze confirmation view, kick alarm
            manager. */
         mSnoozeButton = (Button) findViewById(R.id.snooze);
-        mSnoozeButton.requestFocus();
+        if (mSnooze > 0) {
+          mSnoozeButton.requestFocus();
+          mSnoozeButton.setVisibility(View.VISIBLE);
+        }
+        else { // hide the snooze button if snooze disabled for this alarm
+          mSnoozeButton.setVisibility(View.GONE);
+        }
         // If this was a configuration change, keep the silenced text if the
         // alarm was killed.
         if (mState == KILLED) {
@@ -177,7 +193,8 @@ public class AlarmAlert extends Activity {
             mSnoozeButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     snooze();
-                    finish();
+                    if (mCaptchaSnooze == 0)
+                      finish();
                 }
             });
         }
@@ -187,7 +204,8 @@ public class AlarmAlert extends Activity {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         dismiss();
-                        finish();
+                        if (mCaptchaDismiss == 0)
+                          finish();
                     }
                 });
     }
@@ -197,10 +215,18 @@ public class AlarmAlert extends Activity {
         if (mState != UNKNOWN) {
             return;
         }
+        if (mSnooze == 0) { // snooze disabled for this alarm
+          return;
+        }
+        if (mCaptchaSnooze != 0 && !mCaptchaDone) {
+          show_captcha(mCaptchaSnooze, SNOOZE);
+          return;
+        }
+
         // If the next alarm is set for sooner than the snooze interval, don't
         // snooze. Instead, toast the user that the snooze will not be set.
         final long snoozeTime = System.currentTimeMillis()
-                + (1000 * 60 * SNOOZE_MINUTES);
+                + (1000 * 60 * mSnooze);
         final long nextAlarm =
                 Alarms.calculateNextAlert(AlarmAlert.this).getAlert();
         String displayTime = null;
@@ -215,7 +241,7 @@ public class AlarmAlert extends Activity {
                     mLabel);
             Alarms.setNextAlert(AlarmAlert.this);
             displayTime = getString(R.string.alarm_alert_snooze_set,
-                    SNOOZE_MINUTES);
+                    mSnooze);
             mState = SNOOZE;
         }
         // Intentionally log the snooze time for debugging.
@@ -230,6 +256,10 @@ public class AlarmAlert extends Activity {
     private void dismiss() {
         if (mState != UNKNOWN) {
             return;
+        }
+        if (mCaptchaDismiss != 0 && !mCaptchaDone) {
+          show_captcha(mCaptchaDismiss, DISMISS);
+          return;
         }
         mState = DISMISS;
         mKlaxon.stop(this, false);
@@ -268,7 +298,8 @@ public class AlarmAlert extends Activity {
         if (Log.LOGV) Log.v("AlarmAlert.onResume()");
         disableKeyguard();
 
-        mShakeListener.resume();
+        if (mShakeListener != null)
+          mShakeListener.resume();
     }
 
     @Override
@@ -281,7 +312,8 @@ public class AlarmAlert extends Activity {
         // the lock and keyguard.
         releaseLocks();
 
-        mShakeListener.pause();
+        if (mShakeListener != null)
+          mShakeListener.pause();
     }
 
     @Override
@@ -290,6 +322,7 @@ public class AlarmAlert extends Activity {
         updateLayout();
     }
 
+/*
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         // Do this on key down to handle a few of the system keys. Only handle
@@ -328,6 +361,7 @@ public class AlarmAlert extends Activity {
         }
         return super.dispatchKeyEvent(event);
     }
+*/
 
     private synchronized void enableKeyguard() {
         if (mKeyguardLock != null) {
@@ -350,4 +384,49 @@ public class AlarmAlert extends Activity {
         AlarmAlertWakeLock.release();
         enableKeyguard();
     }
+
+
+    public void reportAlarm(
+            int idx, boolean enabled, int hour, int minutes,
+            Alarms.DaysOfWeek daysOfWeek, boolean vibrate, String message, String alert,
+            int snooze, int duration, int delay, boolean vibrate_only, 
+            int volume, int crescendo,
+            int captcha_snooze, int captcha_dismiss
+            ) {
+      mSnooze = snooze;
+      mCaptchaSnooze = captcha_snooze;
+      mCaptchaDismiss = captcha_dismiss;
+
+      updateLayout();
+    }
+
+    private void show_captcha(int captcha_type, int which_state)
+    {
+      CaptchaInterface captcha;
+      if (captcha_type == Alarms.CAPTCHA_TYPE_PUZZLE) {
+        captcha = new PuzzleCaptcha(this);
+      }
+      else
+      if (captcha_type == Alarms.CAPTCHA_TYPE_MATH) {
+        captcha = new MathCaptcha(this);
+      }
+      else
+        return;
+      final int which = which_state;
+      captcha.setOnCorrectListener(new CaptchaInterface.OnCorrectListener() {
+        public void onCorrect() {
+          mCaptchaDone = true;
+          if (which == SNOOZE) {
+            snooze();  
+          }
+          else
+          if (which == DISMISS) {
+            dismiss();
+          }
+          finish();
+        }
+      });
+      captcha.show();
+    }
+      
 }
