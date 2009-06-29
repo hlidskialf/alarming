@@ -315,10 +315,21 @@ public class Alarms {
     /**
      * Creates a new Alarm.
      */
-    public synchronized static Uri addAlarm(ContentResolver contentResolver) {
+    public synchronized static Uri addAlarm(Context context) {
         ContentValues values = new ContentValues();
         values.put(Alarms.AlarmColumns.HOUR, 8);
-        return contentResolver.insert(AlarmColumns.CONTENT_URI, values);
+
+        SharedPreferences prefs = context.getSharedPreferences(AlarmClock.PREFERENCES, 0);
+                
+        values.put(Alarms.AlarmColumns.SNOOZE, prefs.getInt("default_snooze", 9));
+        values.put(Alarms.AlarmColumns.DURATION, prefs.getInt("default_duration", 10));
+        values.put(Alarms.AlarmColumns.DELAY, prefs.getInt("default_delay", 0));
+        values.put(Alarms.AlarmColumns.VOLUME, prefs.getInt("default_volume", 100));
+        values.put(Alarms.AlarmColumns.CRESCENDO, prefs.getInt("default_crescendo", 0));
+        values.put(Alarms.AlarmColumns.ALERT, 
+          prefs.getString("default_alarm",Settings.System.DEFAULT_RINGTONE_URI.toString())); 
+
+        return context.getContentResolver().insert(AlarmColumns.CONTENT_URI, values);
     }
 
     /**
@@ -824,4 +835,29 @@ public class Alarms {
     static boolean get24HourMode(final Context context) {
         return android.text.format.DateFormat.is24HourFormat(context);
     }
+
+
+    public synchronized static void getQuickAlarm(Context context, AlarmSettings alarmSettings) {
+      SharedPreferences prefs = context.getSharedPreferences(AlarmClock.PREFERENCES, 0);
+      int id = 0;
+      int hour = 0;
+      int minutes = 0;
+      boolean enabled = true;
+      String message = context.getString(R.string.quick_alarm);
+      String alert = prefs.getString("default_alarm", Settings.System.DEFAULT_RINGTONE_URI.toString());
+      int snooze = 0;
+      int duration = prefs.getInt("default_duration",10);
+      int delay = prefs.getInt("default_delay",0);
+      boolean vibrate = prefs.getBoolean("default_vibrate",false);
+      boolean vibrateOnly = prefs.getBoolean("default_vibrate_only",false);
+      int volume = prefs.getInt("default_volume",100);
+      int crescendo = prefs.getInt("default_crescendo",0);
+      int captcha_snooze = 0;
+      int captcha_dismiss = 0;
+      alarmSettings.reportAlarm(
+              id, enabled, hour, minutes, new DaysOfWeek(0), vibrate, message, alert,
+              snooze, duration, delay, vibrateOnly, volume, crescendo, 
+              captcha_snooze, captcha_dismiss);
+    }
+
 }

@@ -50,13 +50,14 @@ import java.util.GregorianCalendar;
  */
 public class AlarmClock extends Activity {
 
-    final static String PREFERENCES = "AlarmClock";
+    final static String PREFERENCES = "com.hlidskialf.android.alarmclock_preferences";
     final static int SET_ALARM = 1;
     final static int BED_CLOCK = 2;
     final static String PREF_CLOCK_FACE = "face";
     final static String PREF_SHOW_CLOCK = "show_clock";
     final static String PREF_SHOW_QUICK_ALARM = "show_quick_alarm";
     final static String PREF_LAST_QUICK_ALARM = "last_quick_alarm";
+    final static String PREF_SHAKE_SNOOZE = "allow_shake_snooze";
 
     final static int MENU_ITEM_EDIT=1;
     final static int MENU_ITEM_DELETE=2;
@@ -278,7 +279,6 @@ public class AlarmClock extends Activity {
 
         setClockVisibility(mPrefs.getBoolean(PREF_SHOW_CLOCK, true));
         setQuickAlarmVisibility(mPrefs.getBoolean(PREF_SHOW_QUICK_ALARM, true));
-
     }
 
     @Override
@@ -296,6 +296,8 @@ public class AlarmClock extends Activity {
 
         updateSnoozeVisibility();
         updateEmptyVisibility();
+        setClockVisibility(mPrefs.getBoolean(PREF_SHOW_CLOCK, true));
+        setQuickAlarmVisibility(mPrefs.getBoolean(PREF_SHOW_QUICK_ALARM, true));
     }
 
     @Override
@@ -338,13 +340,15 @@ public class AlarmClock extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         mAddAlarmItem.setVisible(mAlarmsList.getChildCount() < MAX_ALARM_COUNT);
+
+        mBedClockItem.setVisible(mPrefs.getBoolean("bedclock_enable", true));
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item == mAddAlarmItem) {
-            Uri uri = Alarms.addAlarm(getContentResolver());
+            Uri uri = Alarms.addAlarm(this);
             // FIXME: scroll to new item.  mAlarmsList.requestChildRectangleOnScreen() ?
             String segment = uri.getPathSegments().get(1);
             int newId = Integer.parseInt(segment);
@@ -360,6 +364,12 @@ public class AlarmClock extends Activity {
         }
 
         return false;
+    }
+    @Override
+    protected void onActivityResult(int request, int result, Intent data)
+    {
+      //setQuickAlarmVisibility(mPrefs.getBoolean(PREF_SHOW_QUICK_ALARM, true));
+      //setClockVisibility(mPrefs.getBoolean(PREF_SHOW_CLOCK, true));
     }
 
 

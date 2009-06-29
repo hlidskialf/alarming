@@ -212,6 +212,35 @@
     <string name="edit_alarm">Edit alarm</string>
     <string name="preview_alarm">Preview alarm</string>
 
+    <!-- preferences -->
+    <string name="show_clock_summary">Show clock on alarm list screen</string>
+    <string name="quickalarm_title">Show Quick Snooze</string>
+    <string name="quickalarm_summary">Use Quick Snooze for short timers</string>
+    <string name="bedclock_prefs">Bed Clock Preferences</string>
+    <string name="bedclock_prefs_summary">Long-click clock to see bed clock</string>
+    <string name="bedclock_enable">Enable bed clock</string>
+    <string name="bedclock_enable_summary">Large clock visible from bed</string>
+    <string name="bedclock_wake_lock">Bed clock never sleeps</string>
+    <string name="bedclock_wake_lock_summary">Bed clock disables standby if charging</string>
+    <string name="alarm_defaults">Alarm Defaults</string>
+    <string name="alarm_defaults_summary">Defaults for new alarms and quick snooze</string>
+    <string name="about">About</string>
+    <string name="about_title">About Alarming!</string>
+
+    <!-- about dialog -->
+    <string name="app_description">Alarming! - AlarmClock enhanced</string>
+    <string name="app_version">2.0</string>
+    <string name="about_text"><b>Original source</b>\n<u>http://source.android.com</u>\n\n
+    <b>Source code available</b>\n<u>http://github.com/lithium/alarming</u>\n\n
+    <b>Icon created by</b>\n<u>http://en.wikipedia.org/wiki/User:Tkgd2007</u>\n\n
+    Published by Hlidskialf Software\n\n
+    No warranty of any kind provided.\nNo affiliation with above parties implied.
+    </string>
+
+
+
+
+
     <!-- quick snooze strings -->
     <string name="quick_alarm">Quick Snooze</string>
     <string name="snooze_message_text">Snoozing until %s</string>
@@ -235,6 +264,8 @@
     <string name="delay_disabled">Dont pause</string>
     <string name="captcha_snooze">Captcha on Snooze</string>
     <string name="captcha_dismiss">Captcha on Dismiss</string>
+    <string name="shake_snooze_title">Allow shake to snooze</string>
+    <string name="shake_snooze_summary">Shake your phone to trigger snooze</string>
 
     <!-- bedclock strings -->
     <string name="bed_clock">Bed Clock</string>

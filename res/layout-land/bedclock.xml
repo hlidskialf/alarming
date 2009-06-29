@@ -11,15 +11,15 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="horizontal">
-        <TextSwitcher android:id="@+id/bigclock_time_hour"
+        <TextSwitcher android:id="@+id/bedclock_time_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
-        <TextSwitcher android:id="@+id/bigclock_time_min"
+        <TextSwitcher android:id="@+id/bedclock_time_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
-        <TextSwitcher android:id="@+id/bigclock_time_sec"
+        <TextSwitcher android:id="@+id/bedclock_time_sec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />

@@ -129,14 +129,15 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
 
         updateLayout();
 
-        /*
-        mShakeListener = new ShakeListener(this);
-        mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
-          public void onShake() {
-            snooze();
-          }
-        });
-        */
+        SharedPreferences settings = getSharedPreferences(AlarmClock.PREFERENCES, 0);
+        if (settings.getBoolean(AlarmClock.PREF_SHAKE_SNOOZE, true)) {
+          mShakeListener = new ShakeListener(this);
+          mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
+            public void onShake() {
+              snooze();
+            }
+          });
+        }
     }
 
     private void setTitleFromIntent(Intent i) {
