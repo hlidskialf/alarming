@@ -64,6 +64,7 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
     private int mSnooze;
     private int mDuration;
     private int mCaptchaSnooze, mCaptchaDismiss;
+    private boolean mCaptchaShown = false;
     private boolean mCaptchaDone = false;
 
     @Override
@@ -326,7 +327,6 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
         updateLayout();
     }
 
-/*
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         // Do this on key down to handle a few of the system keys. Only handle
@@ -359,13 +359,13 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
                     } else {
                         snooze();
                     }
-                    finish();
                 }
+                //mKlaxon.stop(this, false);
+                //finish();
                 return true;
         }
         return super.dispatchKeyEvent(event);
     }
-*/
 
     private synchronized void enableKeyguard() {
         if (mKeyguardLock != null) {
@@ -417,6 +417,8 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
       }
       else
         return;
+      if (mCaptchaShown) return;
+      mCaptchaShown = true;
       final int which = which_state;
       captcha.setOnCorrectListener(new CaptchaInterface.OnCorrectListener() {
         public void onCorrect() {
@@ -429,6 +431,11 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
             dismiss();
           }
           finish();
+        }
+      });
+      ((Dialog)captcha).setOnDismissListener(new DialogInterface.OnDismissListener() {
+        public void onDismiss(DialogInterface dialog) {
+          mCaptchaShown = false;
         }
       });
       captcha.show();
