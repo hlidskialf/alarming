@@ -136,6 +136,8 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
           mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
             public void onShake() {
               snooze();
+              if (mCaptchaSnooze == 0)
+                finish();
             }
           });
         }
