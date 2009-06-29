@@ -365,12 +365,6 @@ public class AlarmClock extends Activity {
 
         return false;
     }
-    @Override
-    protected void onActivityResult(int request, int result, Intent data)
-    {
-      //setQuickAlarmVisibility(mPrefs.getBoolean(PREF_SHOW_QUICK_ALARM, true));
-      //setClockVisibility(mPrefs.getBoolean(PREF_SHOW_CLOCK, true));
-    }
 
 
     private boolean getClockVisibility() {

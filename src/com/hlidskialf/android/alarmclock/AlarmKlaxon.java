@@ -147,7 +147,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
         mAlert = alert;
         mDaysOfWeek = daysOfWeek;
         mVibrate = vibrate;
-        mDuration = duration*1000;
+        mDuration = duration*1000*60;
         mDelay = delay;
         mVibrateOnly = vibrate_only;
         mVolume = (float)volume/100f;
@@ -227,7 +227,7 @@ class AlarmKlaxon implements Alarms.AlarmSettings {
       }
 
         /* Start the vibrator after everything is ok with the media player */
-        if (mVibrateOnly || mVibrate) {
+        if (mVibrate) {
             mVibrator.vibrate(sVibratePattern, 0);
         } else {
             mVibrator.cancel();

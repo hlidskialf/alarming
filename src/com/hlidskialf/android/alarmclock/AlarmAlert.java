@@ -62,6 +62,7 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
 
     private ShakeListener mShakeListener;
     private int mSnooze;
+    private int mDuration;
     private int mCaptchaSnooze, mCaptchaDismiss;
     private boolean mCaptchaDone = false;
 
@@ -151,7 +152,7 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
     private void updateSilencedText() {
         TextView silenced = (TextView) findViewById(R.id.silencedText);
         silenced.setText(getString(R.string.alarm_alert_alert_silenced,
-                    AlarmKlaxon.ALARM_TIMEOUT_SECONDS / 60));
+                    mDuration / 1000*60));
         silenced.setVisibility(View.VISIBLE);
     }
 
@@ -397,6 +398,7 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
       mSnooze = snooze;
       mCaptchaSnooze = captcha_snooze;
       mCaptchaDismiss = captcha_dismiss;
+      mDuration = duration;
 
       updateLayout();
     }
