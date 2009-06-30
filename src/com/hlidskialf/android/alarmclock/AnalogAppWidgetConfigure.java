@@ -28,6 +28,9 @@ public class AnalogAppWidgetConfigure extends Activity
         R.layout.clock_droids,
         R.layout.clock_roman,
         R.layout.clock_faceless,
+        R.layout.clock_whatever,
+        R.layout.clock_alarm,
+        R.layout.clock_pocket,
     };
     private LayoutInflater mFactory;
     private Gallery mGallery;
@@ -53,6 +56,9 @@ public class AnalogAppWidgetConfigure extends Activity
       setContentView(R.layout.clockpicker);
       mFactory = LayoutInflater.from(this);
 
+      View layout = findViewById(android.R.id.content);
+      layout.setBackgroundResource(R.drawable.bwgradient);
+
       Intent intent = getIntent();
       mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
@@ -62,7 +68,6 @@ public class AnalogAppWidgetConfigure extends Activity
       mGallery.setOnItemClickListener(this);
 
       mClockLayout = (ViewGroup) findViewById(R.id.clock_layout);
-      mClockLayout.setBackgroundResource(R.drawable.bwgradient);
       mClockLayout.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
           updateAndFinish();

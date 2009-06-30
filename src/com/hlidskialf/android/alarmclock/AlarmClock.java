@@ -94,8 +94,11 @@ public class AlarmClock extends Activity {
         R.layout.clock_googly,
         R.layout.clock_droid2,
         R.layout.clock_droids,
+        R.layout.digital_clock,
         R.layout.analog_appwidget,
-        R.layout.digital_clock
+        R.layout.clock_roman,
+        R.layout.clock_alarm,
+        R.layout.clock_pocket,
     };
 
     private class AlarmTimeAdapter extends CursorAdapter {

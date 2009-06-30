@@ -1,0 +1,8 @@
+<AnalogClock xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clock"
+    style="@style/analogClock"
+    android:dial="@drawable/alarm_face"
+    android:hand_hour="@drawable/alarm_hour"
+    android:hand_minute="@drawable/alarm_minute"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />
