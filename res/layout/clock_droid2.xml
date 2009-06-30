@@ -19,4 +19,6 @@
     style="@style/analogClock"
     android:dial="@drawable/clockdroid2_dial"
     android:hand_hour="@drawable/clockdroid2_hour"
-    android:hand_minute="@drawable/clockdroid2_minute"/>
+    android:hand_minute="@drawable/clockdroid2_minute"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />

@@ -58,6 +58,7 @@ public class AlarmClock extends Activity {
     final static String PREF_SHOW_QUICK_ALARM = "show_quick_alarm";
     final static String PREF_LAST_QUICK_ALARM = "last_quick_alarm";
     final static String PREF_SHAKE_SNOOZE = "allow_shake_snooze";
+    final static String PREF_WIDGET_CLOCK_FACE = "widget_clock_face";
 
     final static int MENU_ITEM_EDIT=1;
     final static int MENU_ITEM_DELETE=2;
@@ -93,6 +94,7 @@ public class AlarmClock extends Activity {
         R.layout.clock_googly,
         R.layout.clock_droid2,
         R.layout.clock_droids,
+        R.layout.analog_appwidget,
         R.layout.digital_clock
     };
 

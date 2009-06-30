@@ -242,6 +242,8 @@
 
 
     <!-- quick snooze strings -->
+    <string name="alarming_widget">Alarming! Clock</string>
+
     <string name="quick_alarm">Quick Snooze</string>
     <string name="snooze_message_text">Snoozing until %s</string>
     <string name="snooze_dismissed">Snooze dismissed.</string>

@@ -19,4 +19,6 @@
     style="@style/analogClock"
     android:dial="@drawable/clock_dial"
     android:hand_hour="@drawable/clock_hour"
-    android:hand_minute="@drawable/clock_minute"/>
+    android:hand_minute="@drawable/clock_minute"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />

@@ -24,6 +24,7 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
@@ -47,8 +48,17 @@ public class AnalogAppWidgetProvider extends BroadcastReceiver {
         String action = intent.getAction();
         
         if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(action)) {
+            SharedPreferences prefs = context.getSharedPreferences(AlarmClock.PREFERENCES, 0);
+            int face = prefs.getInt(AlarmClock.PREF_WIDGET_CLOCK_FACE, 0);
+            if (face < 0 || face > AnalogAppWidgetConfigure.CLOCKS.length) face = 0;
             RemoteViews views = new RemoteViews(context.getPackageName(),
-                    R.layout.analog_appwidget);
+                    AnalogAppWidgetConfigure.CLOCKS[face]);
+
+
+            Intent config = new Intent(context, AnalogAppWidgetConfigure.class);
+            config.setAction(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+            PendingIntent configureIntent = PendingIntent.getActivity(context, 0, config, 0);
+            views.setOnClickPendingIntent(R.id.clock, configureIntent);
             
             int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
             
