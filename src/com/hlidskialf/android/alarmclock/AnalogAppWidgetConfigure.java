@@ -28,10 +28,14 @@ public class AnalogAppWidgetConfigure extends Activity
         R.layout.clock_droids,
         R.layout.clock_roman,
         R.layout.clock_faceless,
+        R.layout.clock_faceless_white,
         R.layout.clock_whatever,
+        R.layout.clock_whatever_white,
         R.layout.clock_alarm,
         R.layout.clock_pocket,
         R.layout.clock_orologio,
+        R.layout.clock_return,
+        R.layout.clock_moma,
     };
     private LayoutInflater mFactory;
     private Gallery mGallery;

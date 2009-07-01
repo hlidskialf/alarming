@@ -97,9 +97,13 @@ public class AlarmClock extends Activity {
         R.layout.digital_clock,
         R.layout.analog_appwidget,
         R.layout.clock_roman,
+        R.layout.clock_faceless_white,
+        R.layout.clock_whatever_white,
         R.layout.clock_alarm,
         R.layout.clock_pocket,
         R.layout.clock_orologio,
+        R.layout.clock_return,
+        R.layout.clock_moma,
     };
 
     private class AlarmTimeAdapter extends CursorAdapter {
