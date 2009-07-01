@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import java.util.Random;
@@ -21,10 +22,14 @@ public class MathCaptcha extends Dialog implements CaptchaInterface
     mCorrectListener = listener;
   }
 
-  public MathCaptcha(Context context) { super(context); }
+  public MathCaptcha(Context context) { 
+    super(context); 
+    getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+  }
 
   public void onCreate(Bundle icicle) {
     View layout = getLayoutInflater().inflate(R.layout.math_captcha, null);
+
 
     Random rand = new Random();
     int first = rand.nextInt(99);
