@@ -31,6 +31,7 @@ public class AnalogAppWidgetConfigure extends Activity
         R.layout.clock_whatever,
         R.layout.clock_alarm,
         R.layout.clock_pocket,
+        R.layout.clock_orologio,
     };
     private LayoutInflater mFactory;
     private Gallery mGallery;
