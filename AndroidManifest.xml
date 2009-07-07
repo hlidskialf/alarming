@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.hlidskialf.android.alarmclock"
-        android:versionCode="200003"
-        android:versionName="2.0.3"
+        android:versionCode="200004"
+        android:versionName="2.0.4"
         >
 
     <uses-sdk android:minSdkVersion="3"/>
@@ -69,7 +69,7 @@
                   android:theme="@style/NoTitle_FullScreen" 
                   />
 
-        <activity android:name="AnalogAppWidgetConfigure" android:title="@string/alarming_widget">
+        <activity android:name="AnalogAppWidgetConfigure" android:label="@string/alarming_widget">
           <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
           </intent-filter>

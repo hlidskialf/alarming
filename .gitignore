@@ -3,3 +3,4 @@ gen
 build.xml
 *.properties
 .*.sw[op]
+.DS_Store

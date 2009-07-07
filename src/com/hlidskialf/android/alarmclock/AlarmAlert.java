@@ -255,6 +255,7 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
         Toast.makeText(AlarmAlert.this, displayTime, Toast.LENGTH_LONG).show();
         mKlaxon.stop(this, mState == SNOOZE);
         releaseLocks();
+        finish();
     }
 
     // Dismiss the alarm.
@@ -269,6 +270,7 @@ public class AlarmAlert extends Activity implements Alarms.AlarmSettings {
         mState = DISMISS;
         mKlaxon.stop(this, false);
         releaseLocks();
+        finish();
     }
 
     /**
