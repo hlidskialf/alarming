@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_label">"Sveglia"</string>
+    <string name="app_label">"Allarmante!"</string>
     <string name="add_alarm">"Aggiungi allarme"</string>
     <string name="delete_alarm">"Elimina allarme"</string>
     <string name="delete_alarm_confirm">"Questa sveglia verrà eliminata."</string>
@@ -76,4 +76,10 @@
     <string name="settings">"Impostazioni"</string>
     <string name="alarm_in_silent_mode_title">"Allarme in modalità silenziosa"</string>
     <string name="alarm_in_silent_mode_summary">"Riproduci allarme anche con telefono in modalità silenziosa"</string>
+
+    <!-- alarming strings -->
+    <string name="alarming_widget">"Allarmante! Orologio"</string>
+    <string name="quick_alarm">Rapido Pisolino</string>
+    <string name="bed_clock">Orologio del Letto</string>
+    
 </resources>

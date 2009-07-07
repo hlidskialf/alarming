@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_label">"Budík"</string>
+    <string name="app_label">"Alarmující!"</string>
     <string name="add_alarm">"Přidat budík"</string>
     <string name="delete_alarm">"Smazat upozornění"</string>
     <string name="delete_alarm_confirm">"Toto upozornění bude odstraněno."</string>
@@ -76,4 +76,11 @@
     <string name="settings">"Nastavení"</string>
     <string name="alarm_in_silent_mode_title">"Budík v tichém režimu"</string>
     <string name="alarm_in_silent_mode_summary">"Aktivovat budík i v případě, že je telefon v tichém režimu."</string>
+
+    <!-- alarming strings -->
+    <string name="alarming_widget">"Alarmující! Hodiny"</string>
+    <string name="quick_alarm">"Rychlé Schrupnutí"</string>
+    <string name="bed_clock">Lůžko Hodiny</string>
+    
+    
 </resources>

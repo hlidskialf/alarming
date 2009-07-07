@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_label">"Wekker"</string>
+    <string name="app_label">"Alarmerend!"</string>
     <string name="add_alarm">"Alarm toevoegen"</string>
     <string name="delete_alarm">"Alarm verwijderen"</string>
     <string name="delete_alarm_confirm">"Dit alarm wordt verwijderd."</string>
@@ -76,4 +76,11 @@
     <string name="settings">"Instellingen"</string>
     <string name="alarm_in_silent_mode_title">"Alarm in stille modus"</string>
     <string name="alarm_in_silent_mode_summary">"Alarm afspelen, zelfs wanneer de stille modus van de telefoon is geactiveerd"</string>
+
+    <!-- alarming strings -->
+    <string name="alarming_widget">"Alarmerend! Klok"</string>
+    <string name="quick_alarm">Snelle Snooze</string>
+    <string name="bed_clock">Bed Klok</string>
+    
+    
 </resources>
