@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_label">"Wecker"</string>
+    <string name="app_label">"Alarmierend!"</string>
     <string name="add_alarm">"Wecker hinzufügen"</string>
     <string name="delete_alarm">"Wecker löschen"</string>
     <string name="delete_alarm_confirm">"Dieser Alarm wird gelöscht."</string>
@@ -73,7 +73,60 @@
     <item>"Sa"</item>
     <item>"So"</item>
   </string-array>
+
     <string name="settings">"Einstellungen"</string>
     <string name="alarm_in_silent_mode_title">"Alarm im Lautlosmodus"</string>
     <string name="alarm_in_silent_mode_summary">"Alarm auch im Lautlosmodus auslösen"</string>
+
+    
+    <!-- alarming string -->
+    <string name="alarm_list_empty">Nr. Alarm eingestellt</string>
+
+    <string name="edit_alarm">Bearbeit Wecker</string>
+    <string name="preview_alarm">Vorschau Wecker</string>
+    <string name="app_description">Alarmierend! - Wecker verstärkte</string>
+
+    <string name="alarming_widget">Alarmierend! Uhr</string>
+    <string name="quick_alarm">Quick Schlumm</string>
+    <string name="snooze_message_text">Schlumm bis %s</string>
+    <string name="snooze_dismissed">Schlumm Entlassen.</string>
+    
+    <string name="milliseconds">ms</string>
+    <string name="seconds">Sekunden</string>
+    <string name="minutes_suffix">minutes</string>
+    
+    <string name="vibrate_only">Stiller Alarm</string>
+    <string name="snooze">Schlumm</string>
+    <string name="snooze_disabled">Schlumm deaktivieren</string>
+    <string name="duration">Stille nach</string>
+    <string name="duration_disabled">nie Stille</string>
+    <string name="crescendo">Crescendo</string>
+    <string name="crescendo_disabled">keine Zunahme</string>
+    <string name="volume">Volumen</string>
+    <string name="delay">Verzögerung</string>
+    <string name="delay_disabled">Nein Verzögerung</string>
+    <string name="captcha_snooze">Captcha on Schlumm</string>
+    <string name="captcha_dismiss">Captcha on entlassen</string>
+    <string name="shake_snooze_title">Schütteln damit zu Schlumm</string>
+    <string name="shake_snooze_summary">Schütteln, um Schlumm</string>
+    <string name="bed_clock">Bett Uhr</string>
+    <string name="next_animation">nächsten Animation</string>
+    <string name="flip_orientation">Ausrichtung ändern</string>
+    
+   
+    <string name="show_clock_summary">Show clock on alarm list screen</string>
+    <string name="quickalarm_title">zeigen schnell Schlummer</string>
+    <string name="quickalarm_summary">Use Quick Snooze for short timers</string>
+    <string name="bedclock_prefs">Bett Uhr Einstellungen</string>
+    <string name="bedclock_prefs_summary">Bett-Uhr für die Nacht</string>
+    <string name="bedclock_enable">ermöglichen bett uhr</string>
+    <string name="bedclock_enable_summary">große sichtbare Uhr aus dem Bett</string>
+    <string name="bedclock_wake_lock">Bett Uhr schläft nie</string>
+    <string name="bedclock_wake_lock_summary">Bed clock disables standby if charging</string>
+    <string name="alarm_defaults">Alarm Defaults</string>
+    <string name="alarm_defaults_summary">Standardwerte für neue Alarm-und Quick-Schlumm</string>
+    <string name="about">über</string>
+    <string name="about_title">über Alarmierend!</string>
+
+    
 </resources>

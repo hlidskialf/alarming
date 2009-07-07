@@ -217,7 +217,7 @@
     <string name="quickalarm_title">Show Quick Snooze</string>
     <string name="quickalarm_summary">Use Quick Snooze for short timers</string>
     <string name="bedclock_prefs">Bed Clock Preferences</string>
-    <string name="bedclock_prefs_summary">Long-click clock to see bed clock</string>
+    <string name="bedclock_prefs_summary">Bedside clock for night</string>
     <string name="bedclock_enable">Enable bed clock</string>
     <string name="bedclock_enable_summary">Large clock visible from bed</string>
     <string name="bedclock_wake_lock">Bed clock never sleeps</string>
@@ -229,7 +229,7 @@
 
     <!-- about dialog -->
     <string name="app_description">Alarming! - AlarmClock enhanced</string>
-    <string name="app_version">2.0.1</string>
+    <string name="app_version">2.0.4</string>
     <string name="about_text"><b>Original source</b>\n<u>http://source.android.com</u>\n\n
     <b>Source code available</b>\n<u>http://github.com/lithium/alarming</u>\n\n
     <b>Icon created by</b>\n<u>http://en.wikipedia.org/wiki/User:Tkgd2007</u>\n\n
