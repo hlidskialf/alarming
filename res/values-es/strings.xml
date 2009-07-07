@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_label">"Alarma"</string>
+    <string name="app_label">"¡Alarmante!"</string>
     <string name="add_alarm">"Añadir alarma"</string>
     <string name="delete_alarm">"Eliminar alarma"</string>
     <string name="delete_alarm_confirm">"Esta alarma se eliminará."</string>
@@ -76,4 +76,11 @@
     <string name="settings">"Configuración"</string>
     <string name="alarm_in_silent_mode_title">"Alarma en modo silencio"</string>
     <string name="alarm_in_silent_mode_summary">"Reproducir alarma aunque el teléfono esté en modo silencio"</string>
+
+
+    <!-- alarming strings -->
+    <string name="alarming_widget">"¡Alarmante! reloj"</string>
+    <string name="quick_alarm">Dormitar Rápido</string>
+    <string name="bed_clock">Reloj Cama</string>
+    
 </resources>
