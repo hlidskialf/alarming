@@ -182,7 +182,7 @@ public class BedClock extends Activity  implements View.OnClickListener, ViewSwi
 
 
     String s;
-    s = DateFormat.format(is24 ? "H:" : "h:",mCal).toString();
+    s = DateFormat.format(is24 ? "k:" : "h:",mCal).toString();
     if (!s.equals(mHour)) {
         mSwitchHour.setText(mHour = s);
     }
