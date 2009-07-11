@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.hlidskialf.android.alarmclock"
-        android:versionCode="200004"
-        android:versionName="2.0.4"
+        android:versionCode="201000"
+        android:versionName="2.1.0"
         >
 
     <uses-sdk android:minSdkVersion="3"/>
