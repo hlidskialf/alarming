@@ -128,11 +128,12 @@
                 
 
     <PreferenceCategory android:title="@string/about_title">
-      <DialogPreference 
+      <com.hlidskialf.android.preference.AboutDialogPreference 
           android:title="@string/about"
           android:summary="@string/about_title"
+          android:dialogMessage="@string/about_text"
           android:dialogTitle="@string/about_title"
-          android:dialogLayout="@layout/about_dialog"/>
+          />
     </PreferenceCategory>
 
 </PreferenceScreen>
